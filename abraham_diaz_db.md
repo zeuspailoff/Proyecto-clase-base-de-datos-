@@ -65,11 +65,11 @@ INSERT INTO clientes (nombre, apellidos, dni, telefono, email) VALUES
 
 
 INSERT INTO moviles (imei, marca, modelo, id_cliente) VALUES 
-('861234567890123', 'Apple', 'iPhone 15 Pro', 2), 
-('359876543210987', 'Samsung', 'Galaxy S24 Ultra', 3), 
-('441122334455667', 'Xiaomi', 'Redmi Note 13', 4),
-('123456789012345', 'Google', 'Pixel 8', 5),
-('987654321098765', 'Oppo', 'Reno 11', 6); 
+('861234567890123', 'Apple', 'iPhone 15 Pro', 1), 
+('359876543210987', 'Samsung', 'Galaxy S24 Ultra', 2), 
+('441122334455667', 'Xiaomi', 'Redmi Note 13', 3),
+('123456789012345', 'Google', 'Pixel 8', 4),
+('987654321098765', 'Oppo', 'Reno 11', 5); 
 
 
 INSERT INTO reparaciones (descripcion, estado, presupuesto, id_movil, tecnico) VALUES 
@@ -89,4 +89,39 @@ INSERT INTO reparaciones (descripcion, estado, presupuesto, id_movil, tecnico) V
     SELECT c.nombre, c.apellidos, m.marca, m.modelo, m.imei
     FROM clientes c
     JOIN moviles m ON c.id_cliente = m.id_cliente;
+```
+
+### Consulta 2: Reparaciones urgentes
+
+```sql
+    SELECT id_reparacion, descripcion, presupuesto, fecha_entrada
+    FROM reparaciones
+    WHERE estado = 'Pendiente'
+    ORDER BY fecha_entrada ASC;
+```
+### Consulta 3: Reparaciones por tecnico
+
+```sql
+    SELECT tecnico, COUNT(*) AS total_reparaciones
+    FROM reparaciones
+    GROUP BY tecnico;
+```
+
+### Consulta 4: Historial de cliente
+
+```sql
+    SELECT r.id_reparacion, r.descripcion, r.estado, m.modelo
+    FROM reparaciones r
+    JOIN moviles m ON r.id_movil = m.imei
+    JOIN clientes c ON m.id_cliente = c.id_cliente
+    WHERE c.dni = '11223344B';
+```
+
+### Consulta 5: Listado de reparaciones por marca
+
+```sql
+    SELECT m.marca, SUM(r.presupuesto) AS total_presupuesto
+    FROM moviles m
+    JOIN reparaciones r ON m.imei = r.id_movil
+    GROUP BY m.marca;
 ```
